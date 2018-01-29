@@ -1,13 +1,18 @@
 FROM nginx:1.12
 
 #Copy configuration and operation files
-COPY ./conf/* /etc/nginx/
-COPY ./bin/start.sh /usr/local/bin/
-RUN apt-get update && apt-get install -y python-openssl \
+COPY . /tmp/
+
+RUN mv /tmp/bin/* /usr/local/bin/ && \
+  mv /tmp/conf/nginx.conf /etc/nginx/ && \
+  mv /tmp/conf/conf.d/mage.conf /etc/nginx/conf.d/ && \
+  apt-get update && apt-get install -y cron \
+  python-openssl \
   python-crypto \
   python-setuptools \
   python-pip && \
-  pip install acme-nginx
+  pip install acme-nginx && \
+  apt-get clean
 
 WORKDIR /srv/www
 
